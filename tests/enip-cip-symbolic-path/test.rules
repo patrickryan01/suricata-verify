@@ -1,0 +1,3 @@
+alert enip any any -> any any (msg:"cip read tag"; flow:to_server; cip_service:76; sid:1;)
+alert enip any any -> any any (msg:"cip write tag"; flow:to_server; cip_service:77; sid:2;)
+alert enip any any -> any any (msg:"cip extended status 0x2107"; flow:to_client; enip.cip_extendedstatus:8455; sid:3;)

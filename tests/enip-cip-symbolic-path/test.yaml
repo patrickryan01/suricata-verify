@@ -1,0 +1,34 @@
+requires:
+  min-version: 8
+
+# disables checksum verification
+args:
+- -k none --set app-layer.protocols.enip.enabled=yes
+
+checks:
+  # no PDU is flagged invalid
+  - filter:
+      count: 0
+      match:
+        event_type: anomaly
+  # the two Read Tag requests
+  - filter:
+      count: 2
+      match:
+        event_type: alert
+        alert.signature_id: 1
+  # the Write Tag request
+  - filter:
+      count: 1
+      match:
+        event_type: alert
+        alert.signature_id: 2
+        enip.request.cip.service: Write Data
+        # the extended status is 0x2107 on the wire, little endian
+        enip.response.cip.status_extended: "0721"
+  - filter:
+      count: 1
+      match:
+        event_type: alert
+        alert.signature_id: 3
+        enip.response.cip.status: Still Processing
